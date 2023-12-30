@@ -3,6 +3,7 @@ package com.inm429.ecommerce.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,6 +18,7 @@ import com.inm429.ecommerce.Model.Order;
 import com.inm429.ecommerce.Service.OrderService;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/order")
 public class OrderController {
 

@@ -15,7 +15,7 @@ public class ProductService {
 	@Autowired
 	ProductRepository productRepository;
 	
-	public List<Product> getUser(String emailId) {
+	public List<Product> getProducts() {
 		return productRepository.findAll();
 	}
 	

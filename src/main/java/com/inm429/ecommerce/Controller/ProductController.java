@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +22,7 @@ import com.inm429.ecommerce.Service.ProductService;
 
 @RestController
 @CrossOrigin(origins = "*")
+@RequestMapping("/product")
 public class ProductController {
 	
 	private final ProductService productService;
@@ -30,26 +32,32 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("product/{productId}")
+	@GetMapping
+    public ResponseEntity<List<Product>> getAllProducts(@PathVariable String productId) {
+    	 List<Product> products = productService.getProducts();
+         return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+    
+    @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable String productId) {
         Optional<Product> product = productService.getProductById(productId);
         return product.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                       .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("product/name/{productName}")
+    @GetMapping("/name/{productName}")
     public ResponseEntity<List<Product>> getProductsByName(@PathVariable String productName) {
         List<Product> products = productService.getProductsByName(productName);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("product/type/{productType}")
+    @GetMapping("/type/{productType}")
     public ResponseEntity<List<Product>> getProductsByType(@PathVariable String productType) {
         List<Product> products = productService.getProductsByType(productType);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("product/type-and-name")
+    @GetMapping("/type-and-name")
     public ResponseEntity<List<Product>> getProductsByTypeAndName(
             @RequestParam String productType,
             @RequestParam String productName) {
@@ -57,13 +65,13 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @PostMapping("/product")
+    @PostMapping
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {
         Product newProduct = productService.addProduct(product);
         return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }
 
-    @PutMapping("product/{productId}/update-image")
+    @PutMapping("/{productId}/update-image")
     public ResponseEntity<Void> updateProductImage(
             @PathVariable String productId,
             @RequestParam String productImage) {
@@ -71,7 +79,7 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("product/{productId}/update-details")
+    @PutMapping("/{productId}/update-details")
     public ResponseEntity<Void> updateProductDetails(
             @PathVariable String productId,
             @RequestBody ProductUpdateRequest request) {
@@ -81,7 +89,7 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("product/{productId}")
+    @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProductById(@PathVariable String productId) {
         productService.deleteProductById(productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
