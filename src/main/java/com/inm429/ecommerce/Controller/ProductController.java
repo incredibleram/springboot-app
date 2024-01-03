@@ -1,5 +1,7 @@
 package com.inm429.ecommerce.Controller;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.inm429.ecommerce.Model.Product;
 import com.inm429.ecommerce.Service.ProductService;
+import com.inm429.ecommerce.Service.UploadImageService;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -31,13 +35,16 @@ public class ProductController {
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
+	
+	@Autowired
+	private UploadImageService uploadImageService;
 
 	@GetMapping
-    public ResponseEntity<List<Product>> getAllProducts(@PathVariable String productId) {
+    public ResponseEntity<List<Product>> getAllProducts() {
     	 List<Product> products = productService.getProducts();
          return new ResponseEntity<>(products, HttpStatus.OK);
     }
-    
+
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable String productId) {
         Optional<Product> product = productService.getProductById(productId);
@@ -74,7 +81,7 @@ public class ProductController {
     @PutMapping("/{productId}/update-image")
     public ResponseEntity<Void> updateProductImage(
             @PathVariable String productId,
-            @RequestParam String productImage) {
+            @RequestParam String productImage) throws FileNotFoundException, IOException {
         productService.updateProductImage(productId, productImage);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -82,11 +89,21 @@ public class ProductController {
     @PutMapping("/{productId}/update-details")
     public ResponseEntity<Void> updateProductDetails(
             @PathVariable String productId,
-            @RequestBody ProductUpdateRequest request) {
+            @RequestBody ProductUpdateRequest request) throws FileNotFoundException, IOException {
         productService.updateProductDetails(productId, request.getProductName(), request.getProductQuantity(),
                                             request.getProductPrice(), request.getProductType(),
                                             request.getProductImage(), request.getProductDescription());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    
+    @PostMapping("/upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+        try {
+        	uploadImageService.uploadFile(file);
+            return ResponseEntity.ok("File uploaded successfully!");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to upload file: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{productId}")
