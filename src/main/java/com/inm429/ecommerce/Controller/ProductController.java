@@ -87,13 +87,15 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}/update-details")
-    public ResponseEntity<Void> updateProductDetails(
+    public ResponseEntity<Product> updateProductDetails(
             @PathVariable String productId,
             @RequestBody ProductUpdateRequest request) throws FileNotFoundException, IOException {
         productService.updateProductDetails(productId, request.getProductName(), request.getProductQuantity(),
                                             request.getProductPrice(), request.getProductType(),
                                             request.getProductImage(), request.getProductDescription());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<Product>(new Product(productId, request.getProductName(), request.getProductQuantity(),
+                request.getProductPrice(), request.getProductType(),
+                request.getProductImage(), request.getProductDescription()), HttpStatus.OK);
     }
     
     @PostMapping("/upload")

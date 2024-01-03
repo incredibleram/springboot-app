@@ -46,9 +46,6 @@ public class OrderService {
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
             order.setShipped(shipped);
-            if(shipped) {
-            	sendNotificationEmail(orderId);
-            }
             return orderRepository.save(order);
         } else {
             throw new EntityNotFoundException("Order not found with id: " + orderId);
@@ -80,19 +77,4 @@ public class OrderService {
     	return resultList;
     }
     
-    public void sendNotificationEmail(Long orderId) {
-    	Email email = EmailBuilder.startingBlank()
-    		    .from("From", "ramkumardevadoss@gmail.com")
-    		    .to("To", "ramkumardevadoss@gmail.com")
-    		    .withSubject("Email Subject")
-    		    .withPlainText("Email Body")
-    		    .buildEmail();
-
-		Mailer mailer = MailerBuilder
-				.withSMTPServer("smtp.googlemail.com", 587, "ramkumardevadoss@gmail.com", "R12@k123@")
-				.withTransportStrategy(TransportStrategy.SMTPS)
-				.buildMailer();
-		mailer.sendMail(email);
-
-    }
 }
