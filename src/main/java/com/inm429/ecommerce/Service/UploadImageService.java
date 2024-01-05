@@ -23,13 +23,13 @@ public class UploadImageService {
     }
 
     public void uploadFile(MultipartFile file) throws IOException {
-        BlobId blobId = BlobId.of("inm429-ecommerce-bucket", file.getOriginalFilename());
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-        storage.create(blobInfo, file.getBytes());
+//        BlobId blobId = BlobId.of("inm429-ecommerce-storage-bucket", file.getOriginalFilename());
+//        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+//        storage.create(blobInfo, file.getBytes());
     }
 
     public Resource downloadFile(String fileName) throws MalformedURLException {
-        Blob blob = storage.get(BlobId.of("inm429-ecommerce-bucket", fileName));
+        Blob blob = storage.get(BlobId.of("inm429-ecommerce-storage-bucket", fileName));
         if (blob != null) {
             Path path = Paths.get(fileName);
             UrlResource resource = new UrlResource(path.toUri());

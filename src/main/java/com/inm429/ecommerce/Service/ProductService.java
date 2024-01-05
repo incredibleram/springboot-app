@@ -52,7 +52,7 @@ public class ProductService {
     	File file = new File(productImage);
         MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), "image", new FileInputStream(file));
         uploadImageService.uploadFile(multipartFile);
-        String imageUrl = "https://storage.cloud.google.com/inm429-ecommerce-bucket/"+file.getName();
+        String imageUrl = "https://storage.cloud.google.com/inm429-ecommerce-storage-bucket/"+file.getName();
         productRepository.updateProductImage(productId, imageUrl);
     }
 
@@ -62,7 +62,7 @@ public class ProductService {
     	File file = new File(productImage);
         MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), "image", new FileInputStream(file));
         uploadImageService.uploadFile(multipartFile);
-        String imageUrl = "https://storage.cloud.google.com/inm429-ecommerce-bucket/"+file.getName();
+        String imageUrl = "https://storage.cloud.google.com/inm429-ecommerce-storage-bucket/"+file.getName();
         productRepository.updateProductDetails(productId, productName, productQuantity, productPrice,
                                                 productType, imageUrl, productDescription);
     }

@@ -90,7 +90,7 @@ public class OrderService {
         mailSender.setPort(587);
         
         mailSender.setUsername("inm429cloudecommerce@gmail.com");
-        mailSender.setPassword("");
+        mailSender.setPassword("jtiz zdwi mbco olxd");
         
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
