@@ -49,22 +49,20 @@ public class ProductService {
     }
 
     public void updateProductImage(String productId, String productImage) throws FileNotFoundException, IOException {
-//    	File file = new File(productImage);
-//        MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), "image", new FileInputStream(file));
-//        uploadImageService.uploadFile(multipartFile);
-        String imageUrl = "https://storage.cloud.google.com/inm429-bucket/"+productImage;
-        productRepository.updateProductImage(productId, imageUrl);
+    	File file = new File(productImage);
+        MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), "image", new FileInputStream(file));
+        uploadImageService.uploadFile(multipartFile);
+        productRepository.updateProductImage(productId, file.getName());
     }
 
     public void updateProductDetails(String productId, String productName, int productQuantity,
                                      int productPrice, String productType, String productImage,
                                      String productDescription) throws FileNotFoundException, IOException {
-//    	File file = new File(productImage);
-//        MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), "image", new FileInputStream(file));
-//        uploadImageService.uploadFile(multipartFile);
-        String imageUrl = "https://storage.cloud.google.com/inm429-bucket/"+productImage;
+    	File file = new File(productImage);
+        MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), "image", new FileInputStream(file));
+        uploadImageService.uploadFile(multipartFile);
         productRepository.updateProductDetails(productId, productName, productQuantity, productPrice,
-                                                productType, imageUrl, productDescription);
+                                                productType, file.getName(), productDescription);
     }
 
     public void deleteProductById(String productId) {

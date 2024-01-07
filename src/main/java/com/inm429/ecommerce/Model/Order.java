@@ -1,5 +1,6 @@
 package com.inm429.ecommerce.Model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ public class Order {
     @Column(name = "amount", nullable = false)
     private int amount;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)    
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 

@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 20s
+
+scrape_configs:
+  - job_name: 'springboot'
+    static_configs:
+      - targets: ['34.147.200.235:8080']

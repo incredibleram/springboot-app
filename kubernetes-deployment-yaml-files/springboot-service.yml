@@ -1,0 +1,38 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: springboot-service
+  labels:
+    app: springboot-service
+spec:
+  selector:
+    app: springboot-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-service
+  labels:
+    name: springboot-service
+    app: springboot-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-service
+  template:
+    metadata:
+      labels:
+        app: springboot-service
+    spec:
+      containers:
+        - name: springboot-service
+          image: europe-west2-docker.pkg.dev/inm420-cloud-ecommerce/ecommerce/springboot-app:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080

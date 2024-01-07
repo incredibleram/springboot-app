@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+spec:
+  selector:
+    app: prometheus
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus
+          ports:
+            - containerPort: 9090
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+          volumeMounts:
+            - name: prometheus-config
+              mountPath: /etc/prometheus
+      volumes:
+        - name: prometheus-config
+          configMap:
+            name: prometheus-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 20s
+    scrape_configs:
+      - job_name: 'springboot'
+        static_configs:
+          - targets: ['34.147.200.235:8080']
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-adapter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-adapter
+  template:
+    metadata:
+      labels:
+        app: prometheus-adapter
+    spec:
+      containers:
+        - name: prometheus-adapter
+          image: prometheus/prometheus-adapter
+          args:
+            - '--config.file=/etc/adapter/config.yml'
+            - '--v=2'
+          volumeMounts:
+            - name: adapter-config
+              mountPath: /etc/adapter
+      volumes:
+        - name: adapter-config
+          configMap:
+            name: prometheus-adapter-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-adapter-config
+data:
+  config.yml: |
+    rules:
+      - seriesQuery: 'custom_metric_count'
+	          resources:
+          overrides:
+            namespace: {resource: "namespace"}
+        name:
+          matches: "^(.*)_count$"
+          as: "${1}_total"
+          labels:
+            resource: "${1}"
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: springboot-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: springboot-service
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Pods
+    pods:
+      metricName: custom_metric_count_total
+      targetAverageValue: 5

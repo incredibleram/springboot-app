@@ -74,7 +74,6 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {
-    	product.setProductImage("https://storage.cloud.google.com/inm429-bucket/"+product.getProductImage());
         Product newProduct = productService.addProduct(product);
         return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }
